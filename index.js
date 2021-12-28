@@ -8,10 +8,18 @@ const {
     Account,
    } = require("@solana/web3.js");
 
+   
+    const newPair = new Keypair();
+    console.log(newPair);
+    const publicKey = new PublicKey(newPair._keypair.publicKey).toString();
+    const secretKey = newPair._keypair.secretKey;
+   
+
+   
+   
+   
    const getWalletBalance = async () => {
     try {
-        
-        
         const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
         const myWallet = Keypair.fromSecretKey(secretKey);
         const walletBalance = await connection.getBalance(
@@ -25,28 +33,26 @@ console.log(`   Wallet balance: ${parseInt(walletBalance)/LAMPORTS_PER_SOL}SOL`)
     }
 };
 
-const airDropSOl = async =>{
+const airDropSol = async() => {
 
     try{
         const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
         const walletKeyPair = Keypair.fromSecretKey(secretKey);
         console.log(`-- Airdropping 2 SOL --`)
-        const fromAirDropSignature = connection.requestAirdrop(
+        const fromAirDropSignature = await connection.requestAirdrop(
           new PublicKey(walletKeyPair.publicKey),
           2 * LAMPORTS_PER_SOL
-       
-     
         );
         connection.confirmTransaction(fromAirDropSignature);
-
     }
-    catch(err){console.log(err);
+    catch(err){
+        console.log(err);
     }
 };   
 
 const driverFunction = async () => {
     await getWalletBalance();
-    await airDropSOl();
+    await airDropSol();
     await getWalletBalance();
 
 }
@@ -55,8 +61,3 @@ driverFunction();
 
 
 
-const newPair = new Keypair();
-console.log(newPair);
-   const publicKey = new PublicKey(newPair._keypair.publicKey).toString();
-   const secretKey = newPair._keypair.secretKey
-   
